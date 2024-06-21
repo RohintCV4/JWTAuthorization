@@ -27,6 +27,7 @@ public class AuthenticationServiceImpl {
     private final JWTServiceImpl jwtService;
     public User signUp(SignUpRequest signUpRequest) {
         User user =  new User();
+        user.setName(signUpRequest.getName());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(Role.USER);
@@ -53,6 +54,7 @@ public class AuthenticationServiceImpl {
 
     public User adminSignUp(SignUpRequest signUpRequest) {
         User user =  new User();
+        user.setName(signUpRequest.getName());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(Role.ADMIN);
