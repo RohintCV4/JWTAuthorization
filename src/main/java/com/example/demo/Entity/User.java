@@ -1,6 +1,5 @@
 package com.example.demo.Entity;
 
-
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -15,30 +14,39 @@ import com.example.demo.Utils.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table
 public class User implements UserDetails {
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	@Id
+    private static final long serialVersionUID = 1L;
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    @Column(unique = true, updatable = false)
+    private Long id;
+
+    @Column(unique = true, updatable = false, nullable = false)
     private String email;
-    private String userName;
+
+//    @Column(nullable = false)
+//    private String name;
+
+    @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
+
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
@@ -56,9 +64,10 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
-    
-    public String getName() {
-    	return userName;
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -80,4 +89,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+    
 }
