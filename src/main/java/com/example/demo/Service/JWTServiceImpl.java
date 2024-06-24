@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.Entity.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,9 +23,11 @@ public class JWTServiceImpl {
 
 
     public String generateToken(UserDetails userDetails){
+    	  User user = (User) userDetails;
+          String name = user.getName();
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                
+                .claim("name",name)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -31,8 +35,11 @@ public class JWTServiceImpl {
     }
 
     public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails){
+    	User user = (User) userDetails;
+        String name = user.getName();
         return Jwts.builder()
                 .setClaims(extraClaims)
+                .claim("name",name)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
@@ -42,6 +49,7 @@ public class JWTServiceImpl {
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
         final Claims claims = extractAllClaims(token);
+       
         return claimsResolver.apply(claims);
     }
 
