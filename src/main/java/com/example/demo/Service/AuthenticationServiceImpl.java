@@ -61,20 +61,17 @@ public class AuthenticationServiceImpl {
         return userRepository.save(user);
     }
 
-    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest){
-        String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
-        if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
-            var jwt = jwtService.generateToken(user);
+	public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+		String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
+		User user = userRepository.findByEmail(userEmail).orElseThrow();
+		if (jwtService.isTokenValid(refreshTokenRequest.getToken(), user)) {
+			var jwt = jwtService.generateToken(user);
+			JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+			jwtAuthenticationResponse.setToken(jwt);
+			jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
 
-
-            JwtAuthenticationResponse jwtAuthenticationResponse =
-                    new JwtAuthenticationResponse();
-            jwtAuthenticationResponse.setToken(jwt);
-            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
-
-            return jwtAuthenticationResponse;
-        }
+			return jwtAuthenticationResponse;
+		}
         return null;
     }
 }
