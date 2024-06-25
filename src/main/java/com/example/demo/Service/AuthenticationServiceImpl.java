@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,8 @@ import com.example.demo.Dto.RefreshTokenRequest;
 import com.example.demo.Dto.SignInRequest;
 import com.example.demo.Dto.SignUpRequest;
 import com.example.demo.Entity.User;
+import com.example.demo.Exceptions.EmailNotFoundException;
+import com.example.demo.Exceptions.InvalidCredentialsException;
 import com.example.demo.Repository.UserRepository;
 import com.example.demo.Utils.Role;
 
@@ -34,20 +37,42 @@ public class AuthenticationServiceImpl {
         return userRepository.save(user);
     }
 
-    public JwtAuthenticationResponse signIn(SignInRequest signInRequest){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(),
-                signInRequest.getPassword()));
+//    public JwtAuthenticationResponse signIn(SignInRequest signInRequest){
+//        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(),
+//                signInRequest.getPassword()));
+//
+//        var user = userRepository.findByEmail(signInRequest.getEmail()).orElseThrow(() ->
+//                new IllegalArgumentException("Invalid Email id"));
+//        var jwt = jwtService.generateToken(user);
+//        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+//
+//        JwtAuthenticationResponse jwtAuthenticationResponse =
+//                new JwtAuthenticationResponse();
+//        jwtAuthenticationResponse.setToken(jwt);
+//        jwtAuthenticationResponse.setRefreshToken(refreshToken);
+//
+//        return jwtAuthenticationResponse;
+//    }
+    
+    public JwtAuthenticationResponse signIn(SignInRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new EmailNotFoundException("Invalid email"));
 
-        var user = userRepository.findByEmail(signInRequest.getEmail()).orElseThrow(() ->
-                new IllegalArgumentException("Invalid Email id"));
-        var jwt = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
+        } catch (AuthenticationException e) {
+            throw new InvalidCredentialsException("Invalid password");
+        }
 
-        JwtAuthenticationResponse jwtAuthenticationResponse =
-                new JwtAuthenticationResponse();
+        String jwt = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+
+        JwtAuthenticationResponse jwtAuthenticationResponse =new JwtAuthenticationResponse();
         jwtAuthenticationResponse.setToken(jwt);
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
-
+        
         return jwtAuthenticationResponse;
     }
 
