@@ -33,6 +33,11 @@ public class AuthenticationController {
     public User adminSignUp(@RequestBody SignUpRequest signUpRequest){
         return authenticationService.adminSignUp(signUpRequest);
     }
+    
+    @PostMapping("/hr-signup")
+    public User hrSignUp(@RequestBody SignUpRequest signUpRequest){
+        return authenticationService.hrSignUp(signUpRequest);
+    }
 
     @PostMapping("/login")
     public JwtAuthenticationResponse login(@RequestBody SignInRequest signInRequest){

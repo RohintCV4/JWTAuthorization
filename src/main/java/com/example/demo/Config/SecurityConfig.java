@@ -16,7 +16,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.demo.Service.UserServiceImpl;
-import com.example.demo.Utils.Role;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,8 +37,10 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(request -> request.requestMatchers("api/v1/auth/**").permitAll()
-						.requestMatchers("api/v1/admin/**").hasAnyAuthority(Role.ADMIN.name())
-						.requestMatchers("api/v1/user/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+						.requestMatchers("/api/v1/admin/**").hasAnyAuthority("Admin")
+						.requestMatchers("/api/v1/user/**").hasAnyAuthority("User", "Admin")
+						.requestMatchers("/api/v1/hr/**").hasAnyAuthority("Hr")
+						
 						.anyRequest().authenticated())
 				.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider())
@@ -48,7 +49,10 @@ public class SecurityConfig {
 		return http.build();
 
 	}
+	
+	// http.authorizeRequests().antMatchers("/api/admin/user/**").hasRole(Role.USER_ADMIN)
 
+	 			
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
