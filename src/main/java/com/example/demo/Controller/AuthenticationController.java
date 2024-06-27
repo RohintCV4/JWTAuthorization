@@ -24,17 +24,17 @@ public class AuthenticationController {
     @Autowired
     private final AuthenticationServiceImpl authenticationService;
 
-    @PostMapping("/signup")
+    @PostMapping("/user/signup")
     public User signUp(@RequestBody SignUpRequest signUpRequest){
         return authenticationService.signUp(signUpRequest);
     }
 
-    @PostMapping("/admin-signup")
+    @PostMapping("/admin/signup")
     public User adminSignUp(@RequestBody SignUpRequest signUpRequest){
         return authenticationService.adminSignUp(signUpRequest);
     }
     
-    @PostMapping("/hr-signup")
+    @PostMapping("/hr/signup")
     public User hrSignUp(@RequestBody SignUpRequest signUpRequest){
         return authenticationService.hrSignUp(signUpRequest);
     }

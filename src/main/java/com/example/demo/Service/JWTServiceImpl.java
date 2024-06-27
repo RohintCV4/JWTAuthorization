@@ -28,9 +28,11 @@ public class JWTServiceImpl {
     public String generateToken(UserDetails userDetails){
     	  User user = (User) userDetails;
           String name = user.getName();
-        return Jwts.builder()
+          String role=user.getRole();
+		return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .claim("name",name)
+                .claim("role", role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -40,9 +42,12 @@ public class JWTServiceImpl {
     public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails){
     	User user = (User) userDetails;
         String name = user.getName();
+        String role=user.getRole();
         return Jwts.builder()
+        		
                 .setClaims(extraClaims)
                 .claim("name",name)
+                .claim("role", role)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
