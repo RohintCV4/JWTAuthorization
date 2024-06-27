@@ -25,18 +25,18 @@ public class AuthenticationController {
     private final AuthenticationServiceImpl authenticationService;
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signUp(@RequestBody SignUpRequest signUpRequest){
-        return ResponseEntity.ok(authenticationService.signUp(signUpRequest));
+    public User signUp(@RequestBody SignUpRequest signUpRequest){
+        return authenticationService.signUp(signUpRequest);
     }
 
     @PostMapping("/admin-signup")
-    public ResponseEntity<User> adminSignUp(@RequestBody SignUpRequest signUpRequest){
-        return ResponseEntity.ok(authenticationService.adminSignUp(signUpRequest));
+    public User adminSignUp(@RequestBody SignUpRequest signUpRequest){
+        return authenticationService.adminSignUp(signUpRequest);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody SignInRequest signInRequest){
-        return ResponseEntity.ok(authenticationService.signIn(signInRequest));
+    public JwtAuthenticationResponse login(@RequestBody SignInRequest signInRequest){
+        return authenticationService.signIn(signInRequest);
     }
 
 

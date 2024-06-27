@@ -86,7 +86,7 @@ public class AuthenticationServiceImpl {
         return userRepository.save(user);
     }
 
-	public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
 		String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
 		User user = userRepository.findByEmail(userEmail).orElseThrow();
 		if (jwtService.isTokenValid(refreshTokenRequest.getToken(), user)) {
