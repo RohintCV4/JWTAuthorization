@@ -86,14 +86,14 @@ public class AuthenticationServiceImpl {
         return userRepository.save(user);
     }
     
-    public User hrSignUp(SignUpRequest signUpRequest) {
-        User user =  new User();
-        user.setName(signUpRequest.getName());
-        user.setEmail(signUpRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        user.setRole(Role.HR);
-        return userRepository.save(user);
-    }
+//    public User hrSignUp(SignUpRequest signUpRequest) {
+//        User user =  new User();
+//        user.setName(signUpRequest.getName());
+//        user.setEmail(signUpRequest.getEmail());
+//        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+//        user.setRole(Role.HR);
+//        return userRepository.save(user);
+//    }
 
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
 		String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
