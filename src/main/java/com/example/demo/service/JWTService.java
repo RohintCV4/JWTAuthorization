@@ -20,7 +20,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 @Service
-public class JWTServiceImpl {
+public class JWTService {
 	
  @Value("${security.jwt.secret-key}")	
   String secretKey ;

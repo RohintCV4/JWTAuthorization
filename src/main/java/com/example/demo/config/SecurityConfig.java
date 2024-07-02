@@ -13,28 +13,22 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.example.demo.service.UserServiceImpl;
+import com.example.demo.service.UserService;
+
+//import com.example.demo.service.UserService;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-	private final UserServiceImpl userService;
-	
-	private final AuthenticationProvider authenticationProvider;
-	
-
-	public SecurityConfig(UserServiceImpl userService, JwtAuthenticationFilter jwtAuthenticationFilter,AuthenticationProvider authenticationProvider) {
-		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-		this.userService = userService;
-		this.authenticationProvider = authenticationProvider;
-	}
+	private final UserService userService;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -44,18 +38,19 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(request ->
-						 request.requestMatchers("/api/v1/auth/**").permitAll()
-						.requestMatchers("/api/v1/user/**").hasAnyAuthority("USER")
-						.requestMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN","USER")
+				.authorizeHttpRequests(request -> request.requestMatchers("api/v1/auth/**").permitAll()
+						.requestMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN")
+						.requestMatchers("/api/v1/user/**").hasAnyAuthority("USER", "ADMIN")
+//						.requestMatchers("/api/v1/hr/**").hasAnyAuthority("Hr")
+						
 						.anyRequest().authenticated())
 				.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authenticationProvider(authenticationProvider)
-				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);		
+				.authenticationProvider(authenticationProvider())
+				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
 		return http.build();
 
 	}
-
 	
 	// http.authorizeRequests().antMatchers("/api/admin/user/**").hasRole(Role.USER_ADMIN)
 
@@ -72,9 +67,4 @@ public class SecurityConfig {
 	AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 		return config.getAuthenticationManager();
 	}
-	
-	@Bean
-    public DefaultWebSecurityExpressionHandler webExpressionHandler() {
-        return new DefaultWebSecurityExpressionHandler();
-    }
 }

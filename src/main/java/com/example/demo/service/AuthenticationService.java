@@ -22,12 +22,12 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationServiceImpl {
+public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final JWTServiceImpl jwtService;
+    private final JWTService jwtService;
     public User signUp(SignUpRequest signUpRequest) {
         User user =  new User();
         user.setName(signUpRequest.getName());

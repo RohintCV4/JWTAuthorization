@@ -12,7 +12,7 @@ import com.example.demo.dto.RefreshTokenRequest;
 import com.example.demo.dto.SignInRequest;
 import com.example.demo.dto.SignUpRequest;
 import com.example.demo.entity.User;
-import com.example.demo.service.AuthenticationServiceImpl;
+import com.example.demo.service.AuthenticationService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationController {
 
     @Autowired
-    private AuthenticationServiceImpl authenticationService;
+    private AuthenticationService authenticationService;
 
     @PostMapping("/user/signup")
     public User signUp(@RequestBody SignUpRequest signUpRequest){
